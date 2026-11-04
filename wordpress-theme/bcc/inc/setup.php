@@ -158,16 +158,3 @@ function bcc_activate() {
 	flush_rewrite_rules();
 }
 add_action( 'after_switch_theme', 'bcc_activate' );
-
-/**
- * Tell the admin when assets are loaded from the original site instead of the theme folder.
- */
-add_action(
-	'admin_notices',
-	function () {
-		if ( ! current_user_can( 'switch_themes' ) || bcc_assets_bundled() || 'themes' !== get_current_screen()->base ) {
-			return;
-		}
-		echo '<div class="notice notice-info"><p><strong>BCC theme:</strong> images, styles and scripts are loaded from <code>' . esc_html( BCC_ASSETS_ORIGIN ) . '</code>. To host them yourself, build the theme with <code>scripts/package_theme.sh</code>, which bundles them in the theme&rsquo;s <code>assets</code> folder.</p></div>';
-	}
-);

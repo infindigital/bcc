@@ -203,6 +203,18 @@ def main():
         json.dump(demo, f, ensure_ascii=False, indent=1)
     print("demo posts", len(demo))
 
+    # Asset list for the in-WordPress asset mirror (inc/assets.php).
+    lists = []
+    for name in ("assets.txt", "assets-extra.txt"):
+        path = os.path.join(ROOT, "scripts", name)
+        if os.path.exists(path):
+            lists += [l.strip() for l in open(path) if l.strip() and not l.startswith("#")]
+    lists.append("wp-content/plugins/skyboot-custom-icons-for-elementor/assets/css/materialdesignicons.min.css")
+    lists = sorted(set(lists))
+    with open(os.path.join(THEME, "inc", "assets-list.txt"), "w") as f:
+        f.write("\n".join(lists) + "\n")
+    print("asset list", len(lists))
+
 
 if __name__ == "__main__":
     main()

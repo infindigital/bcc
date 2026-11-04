@@ -19,6 +19,13 @@ Pro Elements, ElementsKit and MetForm are NOT required.
 * Contact form: the original form. Submissions are saved under "Contact Messages" in the admin and
   emailed to the site admin email (filter: bcc_contact_recipient).
 
+== Assets and icons ==
+
+The theme uses the original site's stylesheets, scripts, icon fonts and images. If they are not
+bundled in assets/, the theme copies them once into wp-content/uploads/bcc-theme-assets/ (in the
+background after activation, or right away from Appearance > BCC Assets > Download now) and then
+serves them from your own domain. Icon fonts only display when served from the same domain.
+
 == Analytics ==
 
 Settings > BCC Analytics: paste a Google Analytics 4, Google Tag Manager, Meta Pixel or

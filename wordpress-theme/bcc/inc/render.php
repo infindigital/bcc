@@ -24,6 +24,10 @@ function bcc_assets_url() {
 	if ( null === $url ) {
 		if ( bcc_assets_bundled() ) {
 			$url = trailingslashit( get_template_directory_uri() ) . 'assets/';
+		} elseif ( bcc_mirror_complete() ) {
+			// Copied into this site's uploads folder (see inc/assets.php).
+			$loc = bcc_mirror_location();
+			$url = $loc['url'];
 		} else {
 			// Assets not bundled: load the same files from the original site.
 			$url = trailingslashit( BCC_ASSETS_ORIGIN );

@@ -108,3 +108,4 @@ wp-content/plugins/pro-elements/assets/js/social.de5cec83bf689b2f1f01.bundle.min
 wp-content/plugins/pro-elements/assets/js/table-of-contents.bff952bd91349056fe78.bundle.min.js
 wp-content/plugins/pro-elements/assets/js/taxonomy-filter.6526351a1205655def47.bundle.min.js
 wp-content/plugins/pro-elements/assets/js/video-playlist.d48e1a11007fe8c248f8.bundle.min.js
+wp-content/plugins/skyboot-custom-icons-for-elementor/assets/css/materialdesignicons.min.css
