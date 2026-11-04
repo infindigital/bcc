@@ -1,4 +1,9 @@
-# BCC Bengaluru — static HTML copy
+# BCC Bengaluru — static HTML copy and WordPress theme
+
+This repository has two builds of **https://bccbengaluru.in**:
+
+- **WordPress theme**: `wordpress-theme/bcc/`, packaged as `bcc-theme.zip`. See [WordPress theme](#wordpress-theme) below.
+- **Static HTML site**: the repository root.
 
 This is a static HTML/CSS/JS copy of **https://bccbengaluru.in**, made from the pages the live WordPress
 site renders (Hello Elementor theme, Elementor + Pro Elements, ElementsKit, MetForm). The markup, classes,
@@ -57,3 +62,31 @@ Everything else is fully static.
 
 `scripts/build.py` rewrites links between pages and asset URLs to relative paths, and removes WordPress-only `<head>` tags
 (RSS feeds, oEmbed, REST discovery, xmlrpc).
+
+## WordPress theme
+
+`wordpress-theme/bcc/` is a standalone WordPress theme that renders the live site's own markup, so the site looks
+and behaves the same without Elementor, Pro Elements, ElementsKit or MetForm. It works like this:
+
+- **Designed pages:** Home, About Us, Our Team, History and Contact Us are served from `views/*.html`, which is the original markup.
+- **Dynamic content:** the Blog page, the home page's "latest posts" grid, single posts (in the original single-post design),
+  "You may also like", category archives, search and 404 all use real WordPress posts.
+- **Contact form:** it's the original form. Messages are saved under **Contact Messages** in wp-admin and emailed to the
+  admin address, so no plugin is needed.
+- **On activation:** the theme creates the pages, sets the front and posts pages, and imports the eight original posts
+  with their featured images. Anything that already exists is left alone.
+
+**Build the installable zip** (it needs the same asset download as the static site):
+
+```bash
+./scripts/package_theme.sh
+```
+
+This creates `dist/bcc-theme.zip`. Upload it in **Appearance → Themes → Add New → Upload Theme**. The "Fetch site
+assets" GitHub workflow also builds the zip and attaches it to the run as the `bcc-theme` artifact.
+
+**Regenerate the views** after changing `scripts/source-html/`:
+
+```bash
+python3 scripts/build_theme.py
+```

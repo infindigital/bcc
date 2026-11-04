@@ -6,7 +6,9 @@ Reads scripts/assets.txt (written by build.py) and scripts/assets-extra.txt, the
 url(...) references inside every downloaded stylesheet (fonts, icons, background images).
 Files that already exist are skipped, so it is safe to re-run.
 
-Usage:  python3 scripts/fetch_assets.py [--origin https://bccbengaluru.in]
+Usage:  python3 scripts/fetch_assets.py [--dest DIR] [--origin https://bccbengaluru.in]
+        --dest defaults to the repository root (the static site); use
+        --dest wordpress-theme/bcc/assets for the WordPress theme.
 """
 import os
 import re
@@ -18,6 +20,9 @@ import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ORIGIN = "https://bccbengaluru.in"
+DEST = ROOT
+if "--dest" in sys.argv:
+    DEST = os.path.abspath(sys.argv[sys.argv.index("--dest") + 1])
 if "--origin" in sys.argv:
     ORIGIN = sys.argv[sys.argv.index("--origin") + 1].rstrip("/")
 
@@ -32,7 +37,7 @@ def read_list(name):
 
 
 def download(rel):
-    dest = os.path.join(ROOT, rel)
+    dest = os.path.join(DEST, rel)
     if os.path.exists(dest) and os.path.getsize(dest) > 0:
         return dest, False
     url = ORIGIN + "/" + urllib.parse.quote(rel)

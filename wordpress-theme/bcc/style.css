@@ -1,0 +1,18 @@
+/*
+Theme Name: BCC
+Theme URI: https://bccbengaluru.in/
+Author: Bearys Central Committee, Bengaluru
+Description: The BCC Bengaluru website (bccbengaluru.in) as a standalone WordPress theme. Every page uses the original site's markup, styles and scripts, so it looks and behaves exactly like the Elementor build without needing Elementor, Pro Elements, ElementsKit or MetForm. Posts, the blog page, category archives and the "latest posts" grids are dynamic; the contact form saves messages under "Contact Messages" and emails the site admin.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.9
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: bcc
+*/
+
+/* All visual styles are loaded from the original site's stylesheets in assets/ (see views/*.html). */
+.bcc-pagination { width: 100%; padding: 20px 0; text-align: center; }
+.bcc-pagination .page-numbers { display: inline-block; margin: 0 4px; padding: 6px 12px; border: 1px solid #B6B3D5; border-radius: 3px; }
+.bcc-pagination .page-numbers.current { background: #433F72; border-color: #433F72; color: #fff; }

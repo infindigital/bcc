@@ -1,7 +1,8 @@
 name: Fetch site assets
 
-# Run this once from the Actions tab (Run workflow). It downloads every image, stylesheet,
-# script and font the static pages use from bccbengaluru.in and commits them to this branch.
+# Run this from the Actions tab (Run workflow). It downloads every image, stylesheet, script and
+# font from bccbengaluru.in into the static site and into the WordPress theme, commits them, and
+# attaches the installable theme as the "bcc-theme" artifact (bcc-theme.zip).
 on:
   workflow_dispatch:
 
@@ -16,13 +17,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Download assets
+      - name: Download assets for the static site
         run: python3 scripts/fetch_assets.py
+      - name: Build the WordPress theme zip
+        run: |
+          mkdir -p wordpress-theme/bcc/assets
+          cp -r wp-content wp-includes wordpress-theme/bcc/assets/
+          ./scripts/package_theme.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bcc-theme
+          path: dist/bcc-theme.zip
       - name: Commit assets
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add wp-content wp-includes
+          git add wp-content wp-includes wordpress-theme/bcc/assets
           if git diff --cached --quiet; then echo "Nothing new to commit"; exit 0; fi
           git commit -m "Add downloaded site assets"
           git push
