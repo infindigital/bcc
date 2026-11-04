@@ -19,6 +19,12 @@ Pro Elements, ElementsKit and MetForm are NOT required.
 * Contact form: the original form. Submissions are saved under "Contact Messages" in the admin and
   emailed to the site admin email (filter: bcc_contact_recipient).
 
+== Analytics ==
+
+Settings > BCC Analytics: paste a Google Analytics 4, Google Tag Manager, Meta Pixel or
+Microsoft Clarity ID, or any other service's code (head / after body / before </body>).
+Clear a field to remove that tracker. Logged-in administrators are not tracked (optional).
+
 == Installation ==
 
 1. Appearance > Themes > Add New > Upload Theme, choose bcc-theme.zip, then Activate.

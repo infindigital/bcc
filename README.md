@@ -73,6 +73,8 @@ and behaves the same without Elementor, Pro Elements, ElementsKit or MetForm. It
   "You may also like", category archives, search and 404 all use real WordPress posts.
 - **Contact form:** it's the original form. Messages are saved under **Contact Messages** in wp-admin and emailed to the
   admin address, so no plugin is needed.
+- **Analytics:** **Settings → BCC Analytics** takes Google Analytics 4, Tag Manager, Meta Pixel and Microsoft Clarity IDs,
+  plus custom code boxes (head, after `<body>`, before `</body>`) for any other service. Clear a field to remove that tracker.
 - **On activation:** the theme creates the pages, sets the front and posts pages, and imports the eight original posts
   with their featured images. Anything that already exists is left alone.
 
