@@ -38,11 +38,21 @@ function bcc_ensure_page( $slug, $title ) {
  * @param int    $parent   Post the attachment belongs to.
  */
 function bcc_import_image( $relative, $parent ) {
-	$file = BCC_THEME_DIR . '/assets/' . $relative;
-	if ( ! $relative || ! is_readable( $file ) ) {
+	if ( ! $relative ) {
 		return 0;
 	}
-	$upload = wp_upload_bits( basename( $file ), null, file_get_contents( $file ) );
+	$file = BCC_THEME_DIR . '/assets/' . $relative;
+	if ( is_readable( $file ) ) {
+		$bits = file_get_contents( $file );
+	} else {
+		// Not bundled: fetch the image from the original site.
+		$response = wp_remote_get( trailingslashit( BCC_ASSETS_ORIGIN ) . $relative, array( 'timeout' => 30 ) );
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			return 0;
+		}
+		$bits = wp_remote_retrieve_body( $response );
+	}
+	$upload = wp_upload_bits( basename( $file ), null, $bits );
 	if ( ! empty( $upload['error'] ) ) {
 		return 0;
 	}
@@ -150,14 +160,14 @@ function bcc_activate() {
 add_action( 'after_switch_theme', 'bcc_activate' );
 
 /**
- * Warn when the bundled assets have not been downloaded into the theme.
+ * Tell the admin when assets are loaded from the original site instead of the theme folder.
  */
 add_action(
 	'admin_notices',
 	function () {
-		if ( ! current_user_can( 'switch_themes' ) || is_readable( BCC_THEME_DIR . '/assets/wp-content/plugins/elementor/assets/css/frontend.min.css' ) ) {
+		if ( ! current_user_can( 'switch_themes' ) || bcc_assets_bundled() || 'themes' !== get_current_screen()->base ) {
 			return;
 		}
-		echo '<div class="notice notice-warning"><p><strong>BCC theme:</strong> the theme&rsquo;s assets folder is empty, so pages will show without styles or images. Install the packaged <code>bcc-theme.zip</code>, or run <code>python3 scripts/fetch_assets.py --dest wordpress-theme/bcc/assets</code> before zipping the theme.</p></div>';
+		echo '<div class="notice notice-info"><p><strong>BCC theme:</strong> images, styles and scripts are loaded from <code>' . esc_html( BCC_ASSETS_ORIGIN ) . '</code>. To host them yourself, build the theme with <code>scripts/package_theme.sh</code>, which bundles them in the theme&rsquo;s <code>assets</code> folder.</p></div>';
 	}
 );

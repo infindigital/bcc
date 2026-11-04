@@ -20,7 +20,24 @@ function bcc_view_exists( $name ) {
  * Base URL of the bundled original assets (wp-content/…, wp-includes/…).
  */
 function bcc_assets_url() {
-	return trailingslashit( get_template_directory_uri() ) . 'assets/';
+	static $url = null;
+	if ( null === $url ) {
+		if ( bcc_assets_bundled() ) {
+			$url = trailingslashit( get_template_directory_uri() ) . 'assets/';
+		} else {
+			// Assets not bundled: load the same files from the original site.
+			$url = trailingslashit( BCC_ASSETS_ORIGIN );
+		}
+		$url = apply_filters( 'bcc_assets_url', $url );
+	}
+	return $url;
+}
+
+/**
+ * Whether the original assets are bundled in the theme's assets/ folder.
+ */
+function bcc_assets_bundled() {
+	return is_readable( BCC_THEME_DIR . '/assets/wp-content/plugins/elementor/assets/css/frontend.min.css' );
 }
 
 /**

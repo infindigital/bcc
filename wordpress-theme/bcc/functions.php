@@ -9,6 +9,9 @@ defined( 'ABSPATH' ) || exit;
 
 define( 'BCC_THEME_VERSION', '1.0.0' );
 define( 'BCC_THEME_DIR', get_template_directory() );
+if ( ! defined( 'BCC_ASSETS_ORIGIN' ) ) {
+	define( 'BCC_ASSETS_ORIGIN', 'https://bccbengaluru.in/' );
+}
 
 require BCC_THEME_DIR . '/inc/render.php';
 require BCC_THEME_DIR . '/inc/setup.php';
