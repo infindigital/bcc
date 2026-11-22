@@ -160,6 +160,18 @@ function bcc_render( $name, $vars = array() ) {
 
 	$assets = bcc_assets_url();
 	$home   = trailingslashit( home_url( '/' ) );
+
+	// Files not bundled in the theme (such as the large brochure PDF) link to the original site.
+	if ( bcc_assets_bundled() ) {
+		$html = preg_replace_callback(
+			'#\{\{ASSETS\}\}(wp-(?:content|includes)/[^\'"\s)?\#]+)#',
+			function ( $m ) {
+				return is_readable( BCC_THEME_DIR . '/assets/' . $m[1] ) ? $m[0] : trailingslashit( BCC_ASSETS_ORIGIN ) . $m[1];
+			},
+			$html
+		);
+	}
+
 	$html   = strtr(
 		$html,
 		array(
