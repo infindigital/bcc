@@ -26,9 +26,24 @@ bundled in assets/, the theme copies them once into wp-content/uploads/bcc-theme
 background after activation, or right away from Appearance > BCC Assets > Download now) and then
 serves them from your own domain. Icon fonts only display when served from the same domain.
 
+== Settings (wp-admin > BCC Theme) ==
+
+* Contact Form: the email address(es) that receive messages, subject prefix, thank-you message,
+  sender name/address, optional SMTP (host, port, encryption, username, password) and a
+  "Send test email" button. Messages are also saved under Contact Messages.
+* Analytics: see below.
+* Sample Posts: import the eight original BCC posts on demand.
+* Assets: where styles and images are loaded from.
+
+== Your own posts ==
+
+The home page "Insights & Article" grid, Blog page, single posts, "You may also like", the
+Latest News / Categories sidebar and category pages all show the site's own posts. The eight
+sample posts are only added on activation when the site has no posts of its own.
+
 == Analytics ==
 
-Settings > BCC Analytics: paste a Google Analytics 4, Google Tag Manager, Meta Pixel or
+BCC Theme > Analytics: paste a Google Analytics 4, Google Tag Manager, Meta Pixel or
 Microsoft Clarity ID, or any other service's code (head / after body / before </body>).
 Clear a field to remove that tracker. Logged-in administrators are not tracked (optional).
 
@@ -39,7 +54,7 @@ Clear a field to remove that tracker. Logged-in administrators are not tracked (
    * sets permalinks to /%postname%/ if they are plain;
    * creates the Home, About Us, Our Team, History, Contact Us and Blog pages if missing;
    * sets Home as the front page and Blog as the posts page if none are set;
-   * creates the eight original posts (with featured images) if posts with those slugs don't exist.
+   * on a site without posts, creates the eight original posts (with featured images).
    Existing pages, posts and settings are never overwritten. To skip the sample posts:
    add_filter( 'bcc_import_demo_posts', '__return_false' );
 3. If you switch from the Elementor build on the same site, you can deactivate Elementor,

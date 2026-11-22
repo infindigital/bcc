@@ -1,6 +1,6 @@
 <?php
 /**
- * Settings → BCC Analytics: add, change or remove tracking without editing code.
+ * BCC Theme → Analytics: add, change or remove tracking without editing code.
  *
  * Supports Google Analytics 4, Google Tag Manager, Meta (Facebook) Pixel and Microsoft Clarity
  * by ID, plus free-form code for the <head>, after <body> and before </body> for any other service.
@@ -62,7 +62,7 @@ function bcc_analytics_active() {
 add_action(
 	'admin_menu',
 	function () {
-		add_options_page( __( 'BCC Analytics', 'bcc' ), __( 'BCC Analytics', 'bcc' ), 'manage_options', 'bcc-analytics', 'bcc_analytics_page' );
+		add_submenu_page( 'bcc-theme', __( 'Analytics', 'bcc' ), __( 'Analytics', 'bcc' ), 'manage_options', 'bcc-analytics', 'bcc_analytics_page' );
 	}
 );
 
@@ -128,7 +128,7 @@ function bcc_analytics_page() {
 	);
 	?>
 	<div class="wrap">
-		<h1><?php esc_html_e( 'BCC Analytics', 'bcc' ); ?></h1>
+		<h1><?php esc_html_e( 'Analytics', 'bcc' ); ?></h1>
 		<p><?php esc_html_e( 'Add or change tracking here. Leave a field empty to remove that tracker. Changes apply to every page of the site as soon as you save.', 'bcc' ); ?></p>
 		<?php settings_errors( BCC_ANALYTICS_OPTION ); ?>
 		<form method="post" action="options.php">

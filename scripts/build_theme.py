@@ -169,6 +169,26 @@ def main():
                             '<h2 class="elementor-heading-title elementor-size-default">{{POST_TITLE}}</h2>', 1)
     single = replace_inner(single, widget_start(single, "a4cf51a"), "{{POST_THUMBNAIL}}")
     single = replace_inner(single, widget_start(single, "f209a00"), "\n{{POST_CONTENT}}\n")
+    # Sidebar "Latest News" and "Categories" become dynamic lists (item templates kept as views).
+    def dynamic_list(html, data_id, token):
+        w = widget_start(html, data_id)
+        ul = re.compile(r'<ul class="[^"]*">').search(html, w)
+        end = html.index("</ul>", ul.end())
+        inner = html[ul.end():end]
+        first = re.search(r"<li\b.*?</li>", inner, re.S).group(0)
+        return html[:ul.end()] + token + html[end:], first
+
+    single, li = dynamic_list(single, "285b03e7", "{{SIDEBAR_POSTS}}")
+    li = re.sub(r'<a href="[^"]*"', '<a href="{{URL}}"', li, count=1)
+    li = re.sub(r"<img [^>]*/>", "{{THUMB}}", li, count=1)
+    li = re.sub(r'(<span class="elementor-icon-list-text">).*?(</span>)', r"\1{{TITLE}}\2", li, count=1, flags=re.S)
+    li = re.sub(r'(<span class="meta-date">).*?(</span>)', r"\1 {{DATE}} \2", li, count=1, flags=re.S)
+    li = re.sub(r'(</i>)\s*[^<]*?(\s*</span>)', r"\1 {{CAT}}\2", li, count=1)
+    write("item-post-list.html", li)
+    single, li = dynamic_list(single, "149a7434", "{{SIDEBAR_CATS}}")
+    li = re.sub(r'<a href="[^"]*"', '<a href="{{URL}}"', li, count=1)
+    li = re.sub(r'(<span class="elementor-icon-list-text">).*?(</span>)', r"\1{{NAME}}\2", li, count=1, flags=re.S)
+    write("item-category.html", li)
     single = re.sub(r"postid-284 ", "", single)
     single = single.replace("post-284 ", "").replace(" category-blog\"", "\"")
     write("single.html", single)

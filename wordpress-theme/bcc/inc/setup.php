@@ -122,6 +122,26 @@ function bcc_import_demo_posts() {
 }
 
 /**
+ * Whether the site already has posts of its own (ignoring WordPress's "Hello world!" sample).
+ */
+function bcc_site_has_own_posts() {
+	$ids = get_posts(
+		array(
+			'post_type'   => 'post',
+			'post_status' => array( 'publish', 'future', 'draft', 'pending', 'private' ),
+			'numberposts' => 5,
+			'fields'      => 'ids',
+		)
+	);
+	foreach ( $ids as $id ) {
+		if ( 'hello-world' !== get_post_field( 'post_name', $id ) ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
  * Activation routine.
  */
 function bcc_activate() {
@@ -152,9 +172,71 @@ function bcc_activate() {
 		update_option( 'blogdescription', 'Sarva Janangada Shantiya Tota' );
 	}
 
-	if ( apply_filters( 'bcc_import_demo_posts', true ) ) {
+	// Sample posts only on a fresh site: a site with its own posts keeps showing just those.
+	if ( apply_filters( 'bcc_import_demo_posts', ! bcc_site_has_own_posts() ) ) {
 		bcc_import_demo_posts();
 	}
 	flush_rewrite_rules();
 }
 add_action( 'after_switch_theme', 'bcc_activate' );
+
+/* ---------------------------------------------------------------------------
+ * BCC Theme → Sample Posts
+ * ------------------------------------------------------------------------- */
+
+add_action(
+	'admin_menu',
+	function () {
+		add_submenu_page( 'bcc-theme', __( 'Sample Posts', 'bcc' ), __( 'Sample Posts', 'bcc' ), 'manage_options', 'bcc-content', 'bcc_content_page' );
+	}
+);
+
+add_action(
+	'admin_post_bcc_import_samples',
+	function () {
+		check_admin_referer( 'bcc_import_samples' );
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Not allowed.', 'bcc' ) );
+		}
+		bcc_import_demo_posts();
+		wp_safe_redirect( admin_url( 'admin.php?page=bcc-content&imported=1' ) );
+		exit;
+	}
+);
+
+/**
+ * Sample posts page.
+ */
+function bcc_content_page() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+	$data    = json_decode( file_get_contents( BCC_THEME_DIR . '/inc/demo-posts.json' ), true );
+	$missing = array();
+	foreach ( (array) $data as $item ) {
+		if ( ! get_page_by_path( $item['slug'], OBJECT, 'post' ) ) {
+			$missing[] = $item['title'];
+		}
+	}
+	?>
+	<div class="wrap">
+		<h1><?php esc_html_e( 'Sample Posts', 'bcc' ); ?></h1>
+		<?php if ( isset( $_GET['imported'] ) ) : // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
+			<div class="notice notice-success"><p><?php esc_html_e( 'Sample posts imported.', 'bcc' ); ?></p></div>
+		<?php endif; ?>
+		<p><?php esc_html_e( 'The theme always shows this site’s own posts: the home page “Insights & Article” grid, the Blog page, single posts, “You may also like”, the Latest News and Categories sidebar, and the category pages. Add or edit them in Posts as usual.', 'bcc' ); ?></p>
+		<p><?php esc_html_e( 'When the theme is activated on a site without posts, it adds the eight original BCC posts so the pages are not empty. Sites that already have posts are left unchanged.', 'bcc' ); ?></p>
+		<?php if ( $missing ) : ?>
+			<p><?php echo esc_html( sprintf( /* translators: %d: number of posts. */ _n( '%d sample post is not on this site:', '%d sample posts are not on this site:', count( $missing ), 'bcc' ), count( $missing ) ) ); ?></p>
+			<ul style="list-style:disc;margin-left:2em"><?php foreach ( $missing as $title ) { echo '<li>' . esc_html( $title ) . '</li>'; } ?></ul>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<input type="hidden" name="action" value="bcc_import_samples" />
+				<?php wp_nonce_field( 'bcc_import_samples' ); ?>
+				<?php submit_button( __( 'Import these sample posts', 'bcc' ), 'secondary' ); ?>
+			</form>
+		<?php else : ?>
+			<p><strong><?php esc_html_e( 'All sample posts are on this site. You can edit or delete them in Posts like any other post.', 'bcc' ); ?></strong></p>
+		<?php endif; ?>
+	</div>
+	<?php
+}

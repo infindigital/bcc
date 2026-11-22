@@ -7,7 +7,7 @@
  * server sends CORS headers), so serving the files locally is what makes the icons appear.
  *
  * The download runs in small batches: automatically in the background after activation (WP-Cron),
- * and from Appearance → BCC Assets with a "Download now" button.
+ * and from BCC Theme → Assets with a "Download now" button.
  *
  * @package BCC
  */
@@ -239,7 +239,7 @@ add_action(
 add_action(
 	'admin_menu',
 	function () {
-		add_theme_page( __( 'BCC Assets', 'bcc' ), __( 'BCC Assets', 'bcc' ), 'switch_themes', 'bcc-assets', 'bcc_assets_page' );
+		add_submenu_page( 'bcc-theme', __( 'Assets', 'bcc' ), __( 'Assets', 'bcc' ), 'switch_themes', 'bcc-assets', 'bcc_assets_page' );
 	}
 );
 
@@ -338,9 +338,9 @@ add_action(
 			return;
 		}
 		$screen = get_current_screen();
-		if ( $screen && 'appearance_page_bcc-assets' === $screen->id ) {
+		if ( $screen && false !== strpos( $screen->id, 'bcc-assets' ) ) {
 			return;
 		}
-		echo '<div class="notice notice-warning"><p><strong>BCC theme:</strong> ' . esc_html__( 'the site’s icons, styles and images are still being copied to your server. Until it finishes, icons may be missing.', 'bcc' ) . ' <a class="button button-primary" href="' . esc_url( admin_url( 'themes.php?page=bcc-assets' ) ) . '">' . esc_html__( 'Finish now', 'bcc' ) . '</a></p></div>';
+		echo '<div class="notice notice-warning"><p><strong>BCC theme:</strong> ' . esc_html__( 'the site’s icons, styles and images are still being copied to your server. Until it finishes, icons may be missing.', 'bcc' ) . ' <a class="button button-primary" href="' . esc_url( admin_url( 'admin.php?page=bcc-assets' ) ) . '">' . esc_html__( 'Finish now', 'bcc' ) . '</a></p></div>';
 	}
 );
